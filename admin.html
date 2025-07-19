@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Amélie</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .admin-panel {
+            display: flex;
+            height: 100vh;
+            background-color: #e4e8e9;
+        }
+
+        .menuPanel {
+            width: 17vw;
+            background-color: #1a1a2e;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.55);
+            height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e96b56, #f39c12);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            position: relative;
+            padding-top: 60px; /* Add more top padding to make room for nav buttons */
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+        }
+
+        .logout-button {
+            background: rgba(220, 53, 69, 0.8);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        .logout-button:hover {
+            background: rgba(220, 53, 69, 1);
+            border-color: rgba(220, 53, 69, 0.8);
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu li {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            margin: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .menu li:hover {
+            background-color: #253155;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.55);
+        }
+
+        .menu li.active {
+            background-color: #253155;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.55);
+        }
+
+        .menu li img {
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .content-area {
+            width: 83vw;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat History Styles */
+        .chat-history-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #e96b56, #f39c12);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e96b56;
+        }
+
+        .chat-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .chat-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .chat-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: top;
+        }
+
+        .chat-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .message-content {
+            max-width: 400px;
+            word-wrap: break-word;
+        }
+
+        .sender-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .sender-user {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .sender-chatbot {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        /* Product Form Styles */
+        .product-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .product-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-row label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-row input, .form-row select, .form-row textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+            outline: none;
+            border-color: #e96b56;
+            box-shadow: 0 0 0 3px rgba(233, 107, 86, 0.1);
+        }
+
+        .form-row textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-submit {
+            background: linear-gradient(135deg, #e96b56, #f39c12);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-submit:hover {
+            background: linear-gradient(135deg, #d85947, #e6890a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 107, 86, 0.3);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #c3e6cb;
+            margin-top: 20px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-message::before {
+            content: '✅';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 24px;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .success-message-content {
+            margin-left: 50px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #f5c6cb;
+            margin-top: 20px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-message::before {
+            content: '❌';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 24px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error-message-content {
+            margin-left: 50px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(-50%); }
+            40% { transform: translateY(-60%); }
+            60% { transform: translateY(-55%); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            25% { transform: translateY(-50%) translateX(-5px); }
+            75% { transform: translateY(-50%) translateX(5px); }
+        }
+
+        /* Existing Products Styles */
+        .existing-products-section {
+            border-top: 2px solid #e0e0e0;
+            padding-top: 30px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 280px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-color: #e96b56;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #ccc;
+            flex-shrink: 0;
+        }
+
+        .product-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            flex: 1;
+            line-height: 1.2;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e96b56;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .product-category {
+            background: #f8f9fa;
+            color: #666;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+            width: fit-content;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .product-details {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .edit-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .edit-btn:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .no-products {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .no-products::before {
+            content: '📦';
+            display: block;
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 12px;
+            }
+            
+            .product-card {
+                min-height: 260px;
+            }
+            
+            .product-image {
+                height: 100px;
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Analytics Styles */
+        .analytics-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .analytics-header {
+            background: linear-gradient(135deg, #e96b56, #f39c12);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .analytics-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e96b56;
+            margin-bottom: 10px;
+        }
+
+        .analytics-label {
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .analytics-card.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .analytics-card.loading .analytics-number {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .search-section {
+            padding: 30px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .search-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #e96b56;
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #e96b56, #f39c12);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background: linear-gradient(135deg, #d85947, #e6890a);
+            transform: translateY(-2px);
+        }
+
+        .search-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .search-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: top;
+        }
+
+        .search-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-panel {
+                flex-direction: column;
+            }
+            
+            .menuPanel {
+                width: 100vw;
+                height: auto;
+            }
+            
+            .content-area {
+                width: 100vw;
+            }
+            
+            .menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .menu li {
+                white-space: nowrap;
+            }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="admin-panel">
+        <div class="menuPanel">
+            <div class="header">
+                <div class="nav-buttons">
+                    <a href="index.html" class="nav-button" title="Go to Main Website">
+                        🏠 Home
+                    </a>
+                    <a href="contact.html" class="nav-button" title="Go to Contact Page">
+                        📞 Contact
+                    </a>
+                    <button onclick="logout()" class="nav-button logout-button" title="Logout from Admin Panel">
+                        🚪 Logout
+                    </button>
+                </div>
+                Admin Panel
+            </div>
+            <ul class="menu">
+                <li id="chat-history-tab" class="active">
+                    <img src="./history.png" alt="">
+                    Chat History
+                </li>
+                <li id="product-tab">
+                    <img src="./Tshirt.png" alt="">
+                    New Product
+                </li>
+                <li id="analytics-tab">
+                    <img src="./analytics.png" alt="">
+                    Analytics
+                </li>
+            </ul>
+        </div>
+        
+        <div class="content-area">
+            <!-- Chat History Section -->
+            <div id="chat-history-section" class="section active">
+                <div class="chat-history-container">
+                    <div class="chat-header">
+                        <h2>💬 Chat History Management</h2>
+                        <p>Monitor all customer interactions and chatbot conversations</p>
+                        <button onclick="refreshChatHistory()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                            🔄 Refresh Chat History
+                        </button>
+                    </div>
+                    
+                    <div class="chat-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-messages">0</div>
+                            <div>Total Messages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="user-messages">0</div>
+                            <div>User Messages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="bot-messages">0</div>
+                            <div>Bot Responses</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avg-response-time">0ms</div>
+                            <div>Avg Response Time</div>
+                        </div>
+                    </div>
+                    
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="chat-table" id="chat-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 120px;">Sender</th>
+                                    <th>Message</th>
+                                    <th style="width: 150px;">Timestamp</th>
+                                    <th style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Chat messages will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Product Section -->
+            <div id="product-section" class="section">
+                <div class="product-container">
+                    <h2 class="form-title">🛍️ Add New Product</h2>
+                    <form class="product-form" id="product-form">
+                        <div class="form-row">
+                            <label for="product-name">Product Name *</label>
+                            <input type="text" id="product-name" name="product-name" required placeholder="Enter product name">
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="price">Price (₹) *</label>
+                            <input type="number" id="price" name="price" required placeholder="Enter price" min="0" step="0.01">
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="men">Men's Clothing</option>
+                                <option value="women">Women's Clothing</option>
+                                <option value="kids">Kids' Clothing</option>
+                                <option value="shoes">Footwear</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" required placeholder="Enter product description"></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="product-image">Product Image</label>
+                            <input type="file" id="product-image" name="product-image" accept="image/*" onchange="previewImage(this)">
+                            <div id="image-preview" style="margin-top: 10px; display: none;">
+                                <img id="preview-img" src="" alt="Product Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="material">Material</label>
+                            <input type="text" id="material" name="material" placeholder="e.g., Cotton, Polyester, Denim">
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="sizes">Available Sizes</label>
+                            <input type="text" id="sizes" name="sizes" placeholder="e.g., S, M, L, XL, XXL">
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="brand">Brand</label>
+                            <input type="text" id="brand" name="brand" placeholder="Enter brand name">
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="stock-quantity">Stock Quantity</label>
+                            <input type="number" id="stock-quantity" name="stock-quantity" placeholder="Enter stock quantity" min="0">
+                        </div>
+                        
+                        <button type="submit" class="form-submit">Add Product</button>
+                        <button type="button" class="form-submit" id="cancel-edit-btn" onclick="cancelEdit()" style="background: #6c757d; display: none; margin-top: 10px;">Cancel Edit</button>
+                    </form>
+                    
+                    <div id="success-message" class="success-message">
+                        <div class="success-message-content">Product added successfully!</div>
+                    </div>
+                    
+                    <div id="error-message" class="error-message">
+                        <div class="error-message-content">An error occurred. Please try again.</div>
+                    </div>
+                    
+                    <!-- Existing Products Section -->
+                    <div class="existing-products-section" style="margin-top: 40px;">
+                        <h3 style="text-align: center; color: #333; margin-bottom: 20px; font-size: 1.5rem;">📦 Existing Products</h3>
+                        <div class="products-grid" id="products-grid">
+                            <!-- Existing products will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-section" class="section">
+                <div class="analytics-container">
+                    <div class="analytics-header">
+                        <h2>📊 Analytics Dashboard</h2>
+                        <p>Comprehensive insights into customer interactions and business metrics</p>
+                        <button onclick="refreshAnalytics()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                            🔄 Refresh Analytics
+                        </button>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="total-queries">0</div>
+                            <div class="analytics-label">Total Queries</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="total-words">0</div>
+                            <div class="analytics-label">Words Generated</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="total-users">0</div>
+                            <div class="analytics-label">Registered Users</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="total-products">0</div>
+                            <div class="analytics-label">Products Added</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="total-contacts">0</div>
+                            <div class="analytics-label">Contact Messages</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-number" id="newsletter-subs">0</div>
+                            <div class="analytics-label">Newsletter Subscribers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-section">
+                        <h3 class="search-header">🔍 Search User Queries</h3>
+                        <div class="search-container">
+                            <input type="text" id="search-input" class="search-input" placeholder="Search for messages, users, or content...">
+                            <button id="search-button" class="search-button">Search</button>
+                            <button id="clear-search" class="search-button" style="background: #6c757d;">Clear</button>
+                        </div>
+                        
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <table class="search-table" id="search-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 120px;">Sender</th>
+                                        <th>Message</th>
+                                        <th style="width: 150px;">Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3" class="no-results">Enter a search term to find messages</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+    <script>
+        // Firebase Configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
+            authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+            databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "customer-service-chatbot-246d6",
+            storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
+            messagingSenderId: "423454297999",
+            appId: "1:423454297999:web:cd5295d557478344b085fa",
+            measurementId: "G-B7E74QLH1Z"
+        };
+        
+        let firebaseApp = null;
+        let database = null;
+        
+        try {
+            // Initialize Firebase
+            firebaseApp = firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            console.log('Firebase initialized successfully');
+            console.log('Database URL:', firebaseConfig.databaseURL);
+            
+            // Test database connection
+            database.ref('.info/connected').on('value', function(snapshot) {
+                const connected = snapshot.val();
+                console.log('Firebase connection status:', connected ? 'Connected' : 'Disconnected');
+                if (connected) {
+                    console.log('Successfully connected to Firebase Realtime Database');
+                } else {
+                    console.warn('Disconnected from Firebase Realtime Database');
+                }
+            });
+            
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            console.error('Error details:', error.message);
+            alert('Firebase initialization failed: ' + error.message);
+        }
+
+        // Global Variables
+        let currentAdmin = null;
+        let messageDataArray = [];
+        let totalQueries = 0;
+        let totalWords = 0;
+        let userMessages = 0;
+        let botMessages = 0;
+
+        // Authentication Check
+        function checkAdminAuth() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            if (!user.isAdmin) {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentAdmin = user;
+            initializeAdmin();
+        }
+
+        // Initialize Admin Dashboard
+        function initializeAdmin() {
+            setupTabNavigation();
+            
+            // Add test messages for debugging
+            addTestMessages();
+            
+            loadChatHistory();
+            setupProductForm();
+            loadAnalytics();
+            setupSearchFunctionality();
+            
+            // Set up periodic analytics refresh (every 30 seconds)
+            setInterval(() => {
+                console.log('Periodic analytics refresh...');
+                loadAnalytics();
+            }, 30000); // 30 seconds
+        }
+
+        // Add test messages for debugging
+        function addTestMessages() {
+            const testMessages = [
+                { sender: 'User', message: 'Hello, can you help me find a shirt?', timestamp: new Date().toLocaleString() },
+                { sender: 'Chatbot', message: 'Hello! I\'d be happy to help you find a shirt. What style are you looking for?', timestamp: new Date().toLocaleString() },
+                { sender: 'User', message: 'I need a cotton polo shirt', timestamp: new Date().toLocaleString() },
+                { sender: 'Chatbot', message: 'Great! We have the Roadstar Men\'s Cotton Polo T-shirt available for ₹599. It\'s available in sizes S to XXL.', timestamp: new Date().toLocaleString() }
+            ];
+            
+            // Only add test messages if there are no existing messages
+            if (messageDataArray.length === 0) {
+                testMessages.forEach(msg => {
+                    addMessageToTable(msg.sender, msg.message, msg.timestamp);
+                });
+            }
+        }
+
+        // Tab Navigation Setup
+        function setupTabNavigation() {
+            const tabs = ['chat-history-tab', 'product-tab', 'analytics-tab'];
+            const sections = ['chat-history-section', 'product-section', 'analytics-section'];
+
+            tabs.forEach((tabId, index) => {
+                document.getElementById(tabId).addEventListener('click', () => {
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(id => document.getElementById(id).classList.remove('active'));
+                    sections.forEach(id => document.getElementById(id).classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding section
+                    document.getElementById(tabId).classList.add('active');
+                    document.getElementById(sections[index]).classList.add('active');
+                });
+            });
+        }
+
+        // Chat History Functionality
+        function loadChatHistory() {
+            console.log('Loading chat history...');
+            
+            // First, load from localStorage as backup
+            const localMessages = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            if (localMessages.length > 0) {
+                console.log('Loading from localStorage:', localMessages.length, 'messages');
+                localMessages.forEach(message => {
+                    addMessageToTable(message.sender, message.message, message.timestamp);
+                });
+            }
+            
+            // Check if Firebase is properly initialized
+            if (!database) {
+                console.error('Firebase database not initialized');
+                alert('Firebase database not initialized. Please check your configuration.');
+                return;
+            }
+            
+            // Then try to load from Firebase
+            console.log('Attempting to connect to Firebase...');
+            database.ref('messages').once('value', function(snapshot) {
+                const messages = snapshot.val();
+                console.log('Firebase messages:', messages);
+                if (messages) {
+                    // Clear existing messages to avoid duplicates
+                    messageDataArray = [];
+                    totalQueries = 0;
+                    userMessages = 0;
+                    botMessages = 0;
+                    totalWords = 0;
+                    
+                    Object.values(messages).forEach(message => {
+                        addMessageToTable(message.sender, message.message, message.timestamp);
+                    });
+                    
+                    console.log('Successfully loaded', Object.keys(messages).length, 'messages from Firebase');
+                } else {
+                    console.log('No messages found in Firebase database');
+                }
+                
+                // Update analytics after Firebase data is loaded
+                loadAnalytics();
+                
+            }).catch(function(error) {
+                console.error('Firebase error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                alert('Could not connect to Firebase: ' + error.message + '. Showing cached messages only.');
+                
+                // Still update analytics even if Firebase fails
+                loadAnalytics();
+            });
+
+            // Listen for new messages from Firebase
+            if (database) {
+                database.ref('messages').on('child_added', function(snapshot) {
+                    const messageData = snapshot.val();
+                    console.log('New message from Firebase:', messageData);
+                    addMessageToTable(messageData.sender, messageData.message, messageData.timestamp);
+                    
+                    // Update analytics when new message arrives
+                    loadAnalytics();
+                });
+            }
+        }
+
+        function addMessageToTable(sender, message, timestamp = null) {
+            const messageData = {
+                sender: sender,
+                message: message,
+                timestamp: timestamp || new Date().toLocaleString()
+            };
+
+            // Check if message already exists to avoid duplicates
+            const existingMessage = messageDataArray.find(msg => 
+                msg.sender === sender && msg.message === message && msg.timestamp === messageData.timestamp
+            );
+            
+            if (existingMessage) {
+                return; // Skip duplicate message
+            }
+
+            messageDataArray.push(messageData);
+            totalQueries++;
+
+            if (sender.toLowerCase() === 'user') {
+                userMessages++;
+            } else {
+                botMessages++;
+            }
+
+            // Count words
+            const words = message.split(' ').filter(word => word.length > 0);
+            totalWords += words.length;
+
+            // Save to localStorage as backup
+            localStorage.setItem('chatHistory', JSON.stringify(messageDataArray));
+
+            updateChatHistoryDisplay();
+            updateChatStats();
+            
+            // Update analytics in real-time
+            loadAnalytics();
+        }
+
+        function updateChatHistoryDisplay() {
+            const chatTableBody = document.getElementById('chat-table').getElementsByTagName('tbody')[0];
+            chatTableBody.innerHTML = '';
+
+            // Show latest 50 messages
+            const recentMessages = messageDataArray.slice(-50).reverse();
+
+            recentMessages.forEach(function(messageData) {
+                const row = chatTableBody.insertRow();
+                row.innerHTML = `
+                    <td>
+                        <span class="sender-badge sender-${messageData.sender.toLowerCase()}">
+                            ${messageData.sender}
+                        </span>
+                    </td>
+                    <td class="message-content">${messageData.message}</td>
+                    <td style="font-size: 12px; color: #666;">${messageData.timestamp}</td>
+                    <td>
+                        <button onclick="deleteMessage(${messageDataArray.indexOf(messageData)})" 
+                                style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                            Delete
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        function updateChatStats() {
+            document.getElementById('total-messages').textContent = totalQueries;
+            document.getElementById('user-messages').textContent = userMessages;
+            document.getElementById('bot-messages').textContent = botMessages;
+            
+            // Calculate average response time (mock calculation)
+            const avgResponseTime = Math.floor(Math.random() * 1000) + 500;
+            document.getElementById('avg-response-time').textContent = avgResponseTime + 'ms';
+        }
+
+        function deleteMessage(index) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                messageDataArray.splice(index, 1);
+                totalQueries--;
+                updateChatHistoryDisplay();
+                updateChatStats();
+            }
+        }
+
+        // Product Form Functionality
+        function setupProductForm() {
+            const productForm = document.getElementById('product-form');
+            
+            productForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitProductForm();
+            });
+            
+            // Load existing products
+            loadExistingProducts();
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function submitProductForm() {
+            const submitBtn = document.querySelector('.form-submit');
+            const editId = submitBtn.getAttribute('data-edit-id');
+            const isEditMode = editId !== null;
+            
+            const imageInput = document.getElementById('product-image');
+            const formData = {
+                name: document.getElementById('product-name').value,
+                price: document.getElementById('price').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                material: document.getElementById('material').value,
+                sizes: document.getElementById('sizes').value,
+                brand: document.getElementById('brand').value,
+                stockQuantity: document.getElementById('stock-quantity').value,
+                dateAdded: isEditMode ? null : new Date().toISOString(),
+                addedBy: currentAdmin.email,
+                image: null
+            };
+
+            // Validate required fields
+            if (!formData.name || !formData.price || !formData.category || !formData.description) {
+                showErrorMessage('Please fill in all required fields marked with *');
+                return;
+            }
+
+            // Handle image upload
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    formData.image = e.target.result;
+                    if (isEditMode) {
+                        updateProduct(parseInt(editId), formData);
+                    } else {
+                        saveProduct(formData);
+                    }
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                // Keep existing image for edit mode
+                if (isEditMode) {
+                    const products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+                    const existingProduct = products.find(p => p.id === parseInt(editId));
+                    if (existingProduct) {
+                        formData.image = existingProduct.image;
+                    }
+                    updateProduct(parseInt(editId), formData);
+                } else {
+                    saveProduct(formData);
+                }
+            }
+        }
+
+        function updateProduct(productId, formData) {
+            let products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            const productIndex = products.findIndex(p => p.id === productId);
+            
+            if (productIndex === -1) {
+                showErrorMessage('Product not found!');
+                return;
+            }
+            
+            // Keep original date and ID
+            formData.id = productId;
+            formData.dateAdded = products[productIndex].dateAdded;
+            formData.dateModified = new Date().toISOString();
+            
+            products[productIndex] = formData;
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            
+            // Update product info for chatbot
+            const updatedProductInfo = products.map(p => 
+                `Product: ${p.name}, Price: ₹${p.price}, Category: ${p.category}, Description: ${p.description}, Material: ${p.material}, Sizes: ${p.sizes}, Brand: ${p.brand}`
+            ).join(' | ');
+            localStorage.setItem('productInfo', updatedProductInfo);
+            
+            // Reset form to add mode
+            resetProductForm();
+            
+            // Reload existing products
+            loadExistingProducts();
+            
+            showSuccessMessage('Product updated successfully!');
+            
+            // Update analytics
+            loadAnalytics();
+        }
+
+        function resetProductForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('image-preview').style.display = 'none';
+            
+            const submitBtn = document.querySelector('.form-submit');
+            submitBtn.textContent = 'Add Product';
+            submitBtn.removeAttribute('data-edit-id');
+            
+            const cancelBtn = document.getElementById('cancel-edit-btn');
+            cancelBtn.style.display = 'none';
+        }
+
+        function cancelEdit() {
+            if (confirm('Are you sure you want to cancel editing? All changes will be lost.')) {
+                resetProductForm();
+            }
+        }
+
+        function showSuccessMessage(message) {
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Hide error message if showing
+            errorMessage.style.display = 'none';
+            
+            // Update and show success message
+            successMessage.querySelector('.success-message-content').textContent = message;
+            successMessage.style.display = 'block';
+            
+            // Hide after 4 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        function showErrorMessage(message) {
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Hide success message if showing
+            successMessage.style.display = 'none';
+            
+            // Update and show error message
+            errorMessage.querySelector('.error-message-content').textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Hide after 4 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        function saveProduct(formData) {
+            // Save to localStorage
+            let products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            formData.id = Date.now();
+            products.push(formData);
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+
+            // Update product info for chatbot
+            const productInfoString = `Product: ${formData.name}, Price: ₹${formData.price}, Category: ${formData.category}, Description: ${formData.description}, Material: ${formData.material}, Sizes: ${formData.sizes}, Brand: ${formData.brand}`;
+            
+            let existingProductInfo = localStorage.getItem('productInfo') || '';
+            const updatedProductInfo = existingProductInfo + ' | ' + productInfoString;
+            localStorage.setItem('productInfo', updatedProductInfo);
+
+            // Show success message
+            showSuccessMessage('Product added successfully!');
+            
+            // Reset form
+            resetProductForm();
+            
+            // Reload existing products
+            loadExistingProducts();
+
+            // Update analytics
+            loadAnalytics();
+        }
+
+        function loadExistingProducts() {
+            const productsGrid = document.getElementById('products-grid');
+            const products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            
+            if (products.length === 0) {
+                productsGrid.innerHTML = '<div class="no-products">No products added yet. Add your first product using the form above!</div>';
+                return;
+            }
+            
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        ${product.image ? 
+                            `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;">` : 
+                            '🛍️'
+                        }
+                    </div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">₹${product.price}</div>
+                        </div>
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-description">${product.description}</div>
+                        <div class="product-details">
+                            ${product.material ? `<strong>Material:</strong> ${product.material}<br>` : ''}
+                            ${product.sizes ? `<strong>Sizes:</strong> ${product.sizes}<br>` : ''}
+                            ${product.brand ? `<strong>Brand:</strong> ${product.brand}<br>` : ''}
+                            ${product.stockQuantity ? `<strong>Stock:</strong> ${product.stockQuantity}<br>` : ''}
+                            <strong>Added:</strong> ${new Date(product.dateAdded).toLocaleDateString()}
+                        </div>
+                        <div class="product-actions">
+                            <button class="edit-btn" onclick="editProduct(${product.id})">✏️ Edit</button>
+                            <button class="delete-btn" onclick="deleteProduct(${product.id})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                return;
+            }
+            
+            let products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            const productIndex = products.findIndex(p => p.id === productId);
+            
+            if (productIndex === -1) {
+                showErrorMessage('Product not found!');
+                return;
+            }
+            
+            const deletedProduct = products[productIndex];
+            products.splice(productIndex, 1);
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            
+            // Update product info for chatbot (remove deleted product)
+            const updatedProductInfo = products.map(p => 
+                `Product: ${p.name}, Price: ₹${p.price}, Category: ${p.category}, Description: ${p.description}, Material: ${p.material}, Sizes: ${p.sizes}, Brand: ${p.brand}`
+            ).join(' | ');
+            localStorage.setItem('productInfo', updatedProductInfo);
+            
+            // Reload the products grid
+            loadExistingProducts();
+            
+            // Update analytics
+            loadAnalytics();
+            
+            showSuccessMessage(`Product "${deletedProduct.name}" deleted successfully!`);
+        }
+
+        function editProduct(productId) {
+            const products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) {
+                showErrorMessage('Product not found!');
+                return;
+            }
+            
+            // Fill the form with existing product data
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('price').value = product.price;
+            document.getElementById('category').value = product.category;
+            document.getElementById('description').value = product.description;
+            document.getElementById('material').value = product.material || '';
+            document.getElementById('sizes').value = product.sizes || '';
+            document.getElementById('brand').value = product.brand || '';
+            document.getElementById('stock-quantity').value = product.stockQuantity || '';
+            
+            // Show image preview if exists
+            if (product.image) {
+                document.getElementById('preview-img').src = product.image;
+                document.getElementById('image-preview').style.display = 'block';
+            }
+            
+            // Change form button text and add edit mode
+            const submitBtn = document.querySelector('.form-submit');
+            submitBtn.textContent = 'Update Product';
+            submitBtn.setAttribute('data-edit-id', productId);
+            
+            // Show cancel button
+            const cancelBtn = document.getElementById('cancel-edit-btn');
+            cancelBtn.style.display = 'block';
+            
+            // Scroll to form
+            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
+            
+            showSuccessMessage('Product loaded for editing. Make changes and click "Update Product".');
+        }
+
+        // Analytics Functionality
+        function loadAnalytics() {
+            console.log('Loading analytics...', {
+                totalQueries: totalQueries,
+                totalWords: totalWords,
+                messageDataArray: messageDataArray.length
+            });
+            
+            // Total queries and words
+            document.getElementById('total-queries').textContent = totalQueries;
+            document.getElementById('total-words').textContent = totalWords;
+
+            // Registered users
+            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            document.getElementById('total-users').textContent = users.length;
+
+            // Products added
+            const products = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+            document.getElementById('total-products').textContent = products.length;
+
+            // Contact messages
+            const contactMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            document.getElementById('total-contacts').textContent = contactMessages.length;
+
+            // Newsletter subscribers
+            let newsletterCount = 0;
+            users.forEach(user => {
+                const subscriberKey = 'newsletter_' + user.email;
+                if (localStorage.getItem(subscriberKey) === 'true') {
+                    newsletterCount++;
+                }
+            });
+            document.getElementById('newsletter-subs').textContent = newsletterCount;
+            
+            console.log('Analytics updated:', {
+                queries: totalQueries,
+                words: totalWords,
+                users: users.length,
+                products: products.length,
+                contacts: contactMessages.length,
+                newsletter: newsletterCount
+            });
+        }
+
+        // Search Functionality
+        function setupSearchFunctionality() {
+            const searchButton = document.getElementById('search-button');
+            const clearButton = document.getElementById('clear-search');
+            const searchInput = document.getElementById('search-input');
+
+            searchButton.addEventListener('click', performSearch);
+            clearButton.addEventListener('click', clearSearch);
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+
+        function performSearch() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const searchTableBody = document.getElementById('search-table').getElementsByTagName('tbody')[0];
+
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+
+            // Filter messages based on search term
+            const searchResults = messageDataArray.filter(function(messageData) {
+                return messageData.message.toLowerCase().includes(searchTerm) || 
+                       messageData.sender.toLowerCase().includes(searchTerm);
+            });
+
+            // Clear existing content
+            searchTableBody.innerHTML = '';
+
+            if (searchResults.length === 0) {
+                searchTableBody.innerHTML = '<tr><td colspan="3" class="no-results">No messages found matching your search.</td></tr>';
+                return;
+            }
+
+            // Display search results
+            searchResults.forEach(function(messageData) {
+                const row = searchTableBody.insertRow();
+                row.innerHTML = `
+                    <td>
+                        <span class="sender-badge sender-${messageData.sender.toLowerCase()}">
+                            ${messageData.sender}
+                        </span>
+                    </td>
+                    <td class="message-content">${highlightSearchTerm(messageData.message, document.getElementById('search-input').value)}</td>
+                    <td style="font-size: 12px; color: #666;">${messageData.timestamp}</td>
+                `;
+            });
+        }
+
+        function highlightSearchTerm(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            const searchTableBody = document.getElementById('search-table').getElementsByTagName('tbody')[0];
+            searchTableBody.innerHTML = '<tr><td colspan="3" class="no-results">Enter a search term to find messages</td></tr>';
+        }
+
+        // Utility Functions
+        function refreshChatHistory() {
+            console.log('Manually refreshing chat history...');
+            
+            // Check if Firebase is properly initialized
+            if (!database) {
+                console.error('Firebase database not initialized');
+                alert('Firebase database not initialized. Please check your configuration.');
+                return;
+            }
+            
+            // Clear existing data
+            messageDataArray = [];
+            totalQueries = 0;
+            userMessages = 0;
+            botMessages = 0;
+            totalWords = 0;
+            
+            // Reload from Firebase
+            database.ref('messages').once('value', function(snapshot) {
+                const messages = snapshot.val();
+                console.log('Manual refresh - Firebase messages:', messages);
+                
+                if (messages) {
+                    const messageEntries = Object.entries(messages);
+                    console.log('Found', messageEntries.length, 'messages');
+                    
+                    messageEntries.forEach(([key, message]) => {
+                        addMessageToTable(message.sender, message.message, message.timestamp);
+                    });
+                    
+                    // Update analytics after refresh
+                    loadAnalytics();
+                    
+                    alert(`Successfully loaded ${messageEntries.length} messages from Firebase!`);
+                } else {
+                    console.log('No messages found in Firebase');
+                    alert('No messages found in Firebase database. Try using the chatbot first to generate some messages.');
+                }
+            }).catch(function(error) {
+                console.error('Firebase refresh error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                alert('Error connecting to Firebase: ' + error.message);
+            });
+        }
+
+        function refreshAnalytics() {
+            console.log('Refreshing analytics...');
+            
+            // Show loading state
+            const analyticsCards = document.querySelectorAll('.analytics-card');
+            analyticsCards.forEach(card => card.classList.add('loading'));
+            
+            // Force refresh analytics data
+            loadAnalytics();
+            
+            // Also refresh from Firebase to get latest data
+            if (database) {
+                database.ref('messages').once('value', function(snapshot) {
+                    const messages = snapshot.val();
+                    if (messages) {
+                        // Recalculate analytics from Firebase data
+                        totalQueries = 0;
+                        totalWords = 0;
+                        
+                        Object.values(messages).forEach(message => {
+                            totalQueries++;
+                            const words = message.message.split(' ').filter(word => word.length > 0);
+                            totalWords += words.length;
+                        });
+                        
+                        // Update analytics display
+                        loadAnalytics();
+                        
+                        console.log('Analytics refreshed:', {
+                            totalQueries: totalQueries,
+                            totalWords: totalWords
+                        });
+                    }
+                    
+                    // Remove loading state
+                    analyticsCards.forEach(card => card.classList.remove('loading'));
+                    
+                }).catch(function(error) {
+                    console.error('Error refreshing analytics:', error);
+                    // Remove loading state even on error
+                    analyticsCards.forEach(card => card.classList.remove('loading'));
+                });
+            } else {
+                // Remove loading state if no Firebase
+                analyticsCards.forEach(card => card.classList.remove('loading'));
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+        });
+    </script>
+</body>
+</html>

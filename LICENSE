@@ -1,0 +1,89 @@
+MIT License
+
+Copyright (c) 2025 Team HAL04 - Amélie Customer Service Chatbot
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Additional License Information
+
+### Third-Party Components
+
+This project incorporates several third-party components, each with their own licenses:
+
+#### Bootstrap Framework
+- **License**: MIT License
+- **Copyright**: Copyright (c) 2011-2023 The Bootstrap Authors
+- **URL**: https://github.com/twbs/bootstrap/blob/main/LICENSE
+
+#### Firebase SDK
+- **License**: Apache License 2.0
+- **Copyright**: Copyright (c) 2016 Google Inc.
+- **Terms**: Subject to Firebase Terms of Service
+- **URL**: https://firebase.google.com/terms/
+
+#### Ollama
+- **License**: Apache License 2.0 (when used)
+- **Copyright**: Copyright (c) Ollama Inc.
+- **URL**: https://github.com/ollama/ollama/blob/main/LICENSE
+
+#### Font Awesome (if used)
+- **License**: SIL OFL 1.1 (fonts), MIT License (CSS/code)
+- **Copyright**: Copyright (c) Fonticons, Inc.
+- **URL**: https://fontawesome.com/license
+
+#### Animate.css
+- **License**: MIT License
+- **Copyright**: Copyright (c) 2021 Animate.css
+- **URL**: https://github.com/animate-css/animate.css/blob/main/LICENSE
+
+### Project-Specific Terms
+
+#### Commercial Use
+This software may be used for commercial purposes under the terms of the MIT License.
+
+#### Attribution
+While not required by the MIT License, attribution is appreciated:
+- "Powered by Amélie Customer Service Chatbot by Team HAL04"
+- Link to: https://customer-service-chatbot-246d6.web.app/
+
+#### Support and Warranty
+This software is provided "as is" without warranty. For support:
+- Create issues on the project repository
+- Refer to documentation in README.md
+- Contact Team HAL04 for enterprise support
+
+#### Data and Privacy
+Users implementing this software are responsible for:
+- Compliance with data protection regulations (GDPR, CCPA, etc.)
+- Proper handling of customer data and chat logs
+- Implementing appropriate security measures
+- Obtaining necessary user consents
+
+### Trademark Notice
+"Amélie" is a trademark of Team HAL04. Use of the trademark requires permission.
+
+---
+
+**Project**: Amélie Customer Service Chatbot
+**Team**: HAL04
+**Version**: 2.0.0
+**Date**: July 2025
+**Contact**: Open source project - see README.md for details
