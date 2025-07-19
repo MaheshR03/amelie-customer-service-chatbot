@@ -59,8 +59,8 @@ Access the live deployed version of Amélie's customer service chatbot platform.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/MaheshR03/customer-service-chatbot.git
-   cd customer-service-chatbot
+   git clone https://github.com/MaheshR03/amelie-customer-service-chatbot.git
+   cd amelie-customer-service-chatbot
    ```
 
 2. **Install dependencies**
