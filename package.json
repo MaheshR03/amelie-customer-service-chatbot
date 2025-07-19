@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm run serve",
     "serve": "live-server --port=8080 --open=index.html",
-    "build": "npm run minify-css && npm run minify-js && npm run optimize-images",
+    "build": "node scripts/build.js && npm run minify-css && npm run minify-js && npm run optimize-images",
+    "build:secure": "node scripts/build.js",
     "minify-css": "cleancss -o assets/css/style.min.css assets/css/style.css",
     "minify-js": "uglifyjs assets/js/main.js -o assets/js/main.min.js",
     "optimize-images": "echo 'Image optimization completed'",
@@ -17,11 +18,11 @@
     "format": "prettier --write .",
     "env:check": "node scripts/check-env.js",
     "env:validate": "node scripts/validate-config.js",
-    "deploy": "npm run env:validate && npm run build && firebase deploy",
-    "deploy:hosting": "npm run build && firebase deploy --only hosting",
+    "deploy": "npm run build:secure && npm run build && firebase deploy",
+    "deploy:hosting": "npm run build:secure && npm run build && firebase deploy --only hosting",
     "deploy:database": "firebase deploy --only database",
-    "deploy:preview": "npm run build && firebase hosting:channel:deploy preview --expires 7d",
-    "predeploy": "npm run env:validate"
+    "deploy:preview": "npm run build:secure && npm run build && firebase hosting:channel:deploy preview --expires 7d",
+    "predeploy": "npm run env:validate && npm run build:secure"
   },
   "keywords": [
     "chatbot",

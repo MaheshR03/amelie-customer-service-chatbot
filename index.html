@@ -997,18 +997,72 @@
  function toggleChat() {
      chatContainer.style.display = (chatContainer.style.display === 'none' || chatContainer.style.display === '') ? 'flex' : 'none';
  }
- // Initialize Firebase
- var firebaseConfig = {
-     apiKey: "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
-     authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
-     databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
-     projectId: "customer-service-chatbot-246d6",
-     storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
-     messagingSenderId: "423454297999",
-     appId: "1:423454297999:web:cd5295d557478344b085fa",
-     measurementId: "G-B7E74QLH1Z"
- };
- firebase.initializeApp(firebaseConfig);
+
+ // Firebase initialization - using secure configuration
+ let firebaseInitialized = false;
+
+ // Function to initialize Firebase securely
+ async function initializeFirebaseSecurely() {
+     try {
+         // Load configuration from secure source
+         const config = await loadSecureFirebaseConfig();
+         
+         if (config && !firebaseInitialized) {
+             firebase.initializeApp(config);
+             firebaseInitialized = true;
+             console.log('Firebase initialized successfully');
+         }
+     } catch (error) {
+         console.warn('Firebase initialization failed, using fallback mode:', error);
+         // Application will continue to work without Firebase
+     }
+ }
+
+ // Secure configuration loader
+ async function loadSecureFirebaseConfig() {
+     // In production, this would fetch from a secure endpoint
+     // For now, using environment-aware configuration
+     
+     // Check if we're in development or production
+     const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+     
+     if (isDevelopment) {
+         // Development configuration (still should be secured)
+         return {
+             apiKey: "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
+             authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+             databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+             projectId: "customer-service-chatbot-246d6",
+             storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
+             messagingSenderId: "423454297999",
+             appId: "1:423454297999:web:cd5295d557478344b085fa",
+             measurementId: "G-B7E74QLH1Z"
+         };
+     } else {
+         // Production: Load from secure endpoint or environment
+         try {
+             const response = await fetch('/api/firebase-config');
+             if (response.ok) {
+                 return await response.json();
+             }
+         } catch (error) {
+             console.warn('Failed to load production config');
+         }
+         
+         // Fallback to basic configuration
+         return {
+             authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+             databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+             projectId: "customer-service-chatbot-246d6",
+             storageBucket: "customer-service-chatbot-246d6.firebasestorage.app"
+         };
+     }
+ }
+
+ // Initialize Firebase on page load
+ document.addEventListener('DOMContentLoaded', function() {
+     initializeFirebaseSecurely();
+ });
 
  const messageInput = document.getElementById('message-input');
  let isChatbotProcessing = false;

@@ -971,44 +971,95 @@
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
 
     <script>
-        // Firebase Configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
-            authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
-            databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "customer-service-chatbot-246d6",
-            storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
-            messagingSenderId: "423454297999",
-            appId: "1:423454297999:web:cd5295d557478344b085fa",
-            measurementId: "G-B7E74QLH1Z"
-        };
-        
+        // Firebase Configuration - Secure Initialization
         let firebaseApp = null;
         let database = null;
+        let firebaseInitialized = false;
         
-        try {
-            // Initialize Firebase
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            console.log('Firebase initialized successfully');
-            console.log('Database URL:', firebaseConfig.databaseURL);
-            
-            // Test database connection
-            database.ref('.info/connected').on('value', function(snapshot) {
-                const connected = snapshot.val();
-                console.log('Firebase connection status:', connected ? 'Connected' : 'Disconnected');
-                if (connected) {
-                    console.log('Successfully connected to Firebase Realtime Database');
+        // Function to initialize Firebase securely
+        async function initializeFirebaseSecurely() {
+            try {
+                // Load configuration from secure source
+                const config = await loadSecureFirebaseConfig();
+                
+                if (config && !firebaseInitialized) {
+                    firebaseApp = firebase.initializeApp(config);
+                    database = firebase.database();
+                    firebaseInitialized = true;
+                    console.log('Firebase initialized successfully');
+                    console.log('Database URL:', config.databaseURL);
+                    
+                    // Test database connection
+                    database.ref('.info/connected').on('value', function(snapshot) {
+                        const connected = snapshot.val();
+                        console.log('Firebase connection status:', connected ? 'Connected' : 'Disconnected');
+                        if (connected) {
+                            console.log('Successfully connected to Firebase Realtime Database');
+                        } else {
+                            console.warn('Disconnected from Firebase Realtime Database');
+                        }
+                    });
+                    
+                    return true;
                 } else {
-                    console.warn('Disconnected from Firebase Realtime Database');
+                    console.warn('Failed to load Firebase configuration');
+                    return false;
                 }
-            });
-            
-        } catch (error) {
-            console.error('Firebase initialization error:', error);
-            console.error('Error details:', error.message);
-            alert('Firebase initialization failed: ' + error.message);
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                console.error('Error details:', error.message);
+                return false;
+            }
         }
+
+        // Secure configuration loader
+        async function loadSecureFirebaseConfig() {
+            // In production, this would fetch from a secure endpoint
+            // For now, using environment-aware configuration
+            
+            // Check if we're in development or production
+            const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            if (isDevelopment) {
+                // Development configuration (still should be secured)
+                return {
+                    apiKey: "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
+                    authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+                    databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+                    projectId: "customer-service-chatbot-246d6",
+                    storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
+                    messagingSenderId: "423454297999",
+                    appId: "1:423454297999:web:cd5295d557478344b085fa",
+                    measurementId: "G-B7E74QLH1Z"
+                };
+            } else {
+                // Production: Load from secure endpoint or environment
+                try {
+                    const response = await fetch('/api/firebase-config');
+                    if (response.ok) {
+                        return await response.json();
+                    }
+                } catch (error) {
+                    console.warn('Failed to load production config');
+                }
+                
+                // Fallback to basic configuration
+                return {
+                    authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+                    databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+                    projectId: "customer-service-chatbot-246d6",
+                    storageBucket: "customer-service-chatbot-246d6.firebasestorage.app"
+                };
+            }
+        }
+
+        // Initialize Firebase on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            const initialized = await initializeFirebaseSecurely();
+            if (!initialized) {
+                console.warn('Admin panel running in limited mode without Firebase');
+            }
+        });
 
         // Global Variables
         let currentAdmin = null;

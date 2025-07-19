@@ -6,48 +6,48 @@
 
 // Environment Variables Configuration
 const config = {
-    // Firebase Configuration
+    // Firebase Configuration - Client-safe configuration
     firebase: {
-        apiKey: process.env.FIREBASE_API_KEY || "AIzaSyBEPqen-2NzZKNL3qId6Z8zIJFj6W3w-Q4",
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN || "customer-service-chatbot-246d6.firebaseapp.com",
-        databaseURL: process.env.FIREBASE_DATABASE_URL || "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: process.env.FIREBASE_PROJECT_ID || "customer-service-chatbot-246d6",
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "customer-service-chatbot-246d6.firebasestorage.app",
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "423454297999",
-        appId: process.env.FIREBASE_APP_ID || "1:423454297999:web:cd5295d557478344b085fa",
-        measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-B7E74QLH1Z"
+        // Only include client-safe configuration values
+        // Sensitive keys should be stored in environment variables on the server
+        authDomain: "customer-service-chatbot-246d6.firebaseapp.com",
+        projectId: "customer-service-chatbot-246d6",
+        databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+        storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
+        // API Key and other sensitive data will be loaded from environment
+        apiKey: "{{ FIREBASE_API_KEY }}", // Template placeholder - will be replaced during build
+        messagingSenderId: "{{ FIREBASE_MESSAGING_SENDER_ID }}", // Template placeholder
+        appId: "{{ FIREBASE_APP_ID }}", // Template placeholder
+        measurementId: "{{ FIREBASE_MEASUREMENT_ID }}" // Template placeholder
     },
 
     // Application Configuration
     app: {
-        name: process.env.APP_NAME || "Amélie Customer Service Chatbot",
-        version: process.env.APP_VERSION || "1.0.0",
-        environment: process.env.APP_ENVIRONMENT || "development",
-        debug: process.env.DEBUG === "true" || false
+        name: "Amélie Customer Service Chatbot",
+        version: "2.0.0",
+        environment: "production",
+        debug: false
     },
 
     // Ollama Configuration
     ollama: {
-        baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
-        model: process.env.OLLAMA_MODEL || "llama2"
+        baseUrl: "http://localhost:11434",
+        model: "llama2"
     },
 
-    // Admin Configuration
+    // Admin Configuration (Non-sensitive parts only)
     admin: {
-        email: process.env.ADMIN_EMAIL || "admin@amelie.com",
-        hashSalt: process.env.ADMIN_HASH_SALT || "amelie-salt-2024"
+        email: "admin@amelie.com"
     },
 
-    // Security Configuration
-    security: {
-        sessionSecret: process.env.SESSION_SECRET || "your-secret-key-here",
-        jwtSecret: process.env.JWT_SECRET || "your-jwt-secret-here"
-    },
-
-    // Database Configuration
-    database: {
-        url: process.env.DATABASE_URL || "mongodb://localhost:27017/amelie-chatbot"
-    },
+    // Client-side feature flags
+    features: {
+        voiceInput: true,
+        analytics: true,
+        adminPanel: true,
+        offlineMode: true
+    }
+};
 
     // Email Configuration
     email: {
