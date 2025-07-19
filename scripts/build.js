@@ -12,10 +12,14 @@ require('dotenv').config();
 
 // Configuration mapping
 const CONFIG_REPLACEMENTS = {
-    '{{ FIREBASE_API_KEY }}': process.env.FIREBASE_API_KEY || 'FIREBASE_API_KEY_NOT_SET',
-    '{{ FIREBASE_MESSAGING_SENDER_ID }}': process.env.FIREBASE_MESSAGING_SENDER_ID || 'SENDER_ID_NOT_SET',
-    '{{ FIREBASE_APP_ID }}': process.env.FIREBASE_APP_ID || 'APP_ID_NOT_SET',
-    '{{ FIREBASE_MEASUREMENT_ID }}': process.env.FIREBASE_MEASUREMENT_ID || 'MEASUREMENT_ID_NOT_SET'
+    '${FIREBASE_API_KEY}': process.env.FIREBASE_API_KEY || '',
+    '${FIREBASE_AUTH_DOMAIN}': process.env.FIREBASE_AUTH_DOMAIN || '',
+    '${FIREBASE_DATABASE_URL}': process.env.FIREBASE_DATABASE_URL || '',
+    '${FIREBASE_PROJECT_ID}': process.env.FIREBASE_PROJECT_ID || '',
+    '${FIREBASE_STORAGE_BUCKET}': process.env.FIREBASE_STORAGE_BUCKET || '',
+    '${FIREBASE_MESSAGING_SENDER_ID}': process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+    '${FIREBASE_APP_ID}': process.env.FIREBASE_APP_ID || '',
+    '${FIREBASE_MEASUREMENT_ID}': process.env.FIREBASE_MEASUREMENT_ID || ''
 };
 
 // Files that need configuration replacement
@@ -69,7 +73,7 @@ function createSecureConfig() {
 
     // Write public configuration (without sensitive data)
     fs.writeFileSync(
-        path.join(__dirname, 'assets', 'js', 'app-config.js'),
+        path.join(__dirname, '..', 'assets', 'js', 'app-config.js'),
         `// Auto-generated configuration - DO NOT EDIT\nwindow.APP_CONFIG = ${JSON.stringify(secureConfig, null, 2)};`,
         'utf8'
     );

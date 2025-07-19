@@ -1,13 +1,14 @@
 {
   "name": "amelie-customer-service-chatbot",
-  "version": "1.0.0",
-  "description": "Amélie Customer Service Chatbot - E-commerce platform with AI-powered customer support",
+  "version": "2.0.0",
+  "description": "Amélie Customer Service Chatbot - E-commerce platform with AI-powered customer support and enterprise-level security",
   "main": "index.html",
   "scripts": {
     "start": "npm run serve",
     "serve": "live-server --port=8080 --open=index.html",
     "build": "node scripts/build.js && npm run minify-css && npm run minify-js && npm run optimize-images",
     "build:secure": "node scripts/build.js",
+    "cleanup:credentials": "node scripts/cleanup-credentials.js",
     "minify-css": "cleancss -o assets/css/style.min.css assets/css/style.css",
     "minify-js": "uglifyjs assets/js/main.js -o assets/js/main.min.js",
     "optimize-images": "echo 'Image optimization completed'",
