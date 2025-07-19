@@ -144,15 +144,57 @@ Configure Firebase Realtime Database rules for secure access:
 ```json
 {
   "rules": {
+    ".read": false,
+    ".write": false,
+    
     "products": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+      ".read": true,
+      ".write": "auth != null",
+      "$productId": {
+        ".validate": "newData.hasChildren(['name', 'price', 'category', 'description']) && newData.child('name').isString() && newData.child('price').isNumber() && newData.child('category').isString() && newData.child('description').isString()"
+      }
     },
+    
     "messages": {
       ".read": true,
-      ".write": true
+      ".write": true,
+      "$messageId": {
+        ".validate": "newData.hasChildren(['timestamp', 'message', 'sender']) && newData.child('timestamp').isNumber() && newData.child('message').isString() && newData.child('sender').isString()"
+      }
     },
+    
+    "chats": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$chatId": {
+        ".validate": "newData.hasChildren(['timestamp', 'message', 'sender']) && newData.child('timestamp').isNumber() && newData.child('message').isString() && newData.child('sender').isString()"
+      }
+    },
+    
     "analytics": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "visits": {
+        "$visitId": {
+          ".validate": "newData.hasChildren(['timestamp', 'page']) && newData.child('timestamp').isNumber() && newData.child('page').isString()"
+        }
+      },
+      "interactions": {
+        "$interactionId": {
+          ".validate": "newData.hasChildren(['timestamp', 'type', 'data']) && newData.child('timestamp').isNumber() && newData.child('type').isString()"
+        }
+      }
+    },
+    
+    "contacts": {
+      ".read": "auth != null",
+      ".write": true,
+      "$contactId": {
+        ".validate": "newData.hasChildren(['name', 'email', 'message', 'timestamp']) && newData.child('name').isString() && newData.child('email').isString() && newData.child('message').isString() && newData.child('timestamp').isNumber()"
+      }
+    },
+    
+    "admin": {
       ".read": "auth != null",
       ".write": "auth != null"
     }
