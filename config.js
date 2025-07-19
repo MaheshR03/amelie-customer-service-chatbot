@@ -15,10 +15,10 @@ const config = {
         databaseURL: "https://customer-service-chatbot-246d6-default-rtdb.asia-southeast1.firebasedatabase.app",
         storageBucket: "customer-service-chatbot-246d6.firebasestorage.app",
         // API Key and other sensitive data will be loaded from environment
-        apiKey: "{{ FIREBASE_API_KEY }}", // Template placeholder - will be replaced during build
-        messagingSenderId: "{{ FIREBASE_MESSAGING_SENDER_ID }}", // Template placeholder
-        appId: "{{ FIREBASE_APP_ID }}", // Template placeholder
-        measurementId: "{{ FIREBASE_MEASUREMENT_ID }}" // Template placeholder
+        apiKey: "${FIREBASE_API_KEY}", // Template placeholder - will be replaced during build
+        messagingSenderId: "${FIREBASE_MESSAGING_SENDER_ID}", // Template placeholder
+        appId: "${FIREBASE_APP_ID}", // Template placeholder
+        measurementId: "${FIREBASE_MEASUREMENT_ID}" // Template placeholder
     },
 
     // Application Configuration
@@ -46,39 +46,38 @@ const config = {
         analytics: true,
         adminPanel: true,
         offlineMode: true
-    }
-};
+    },
 
     // Email Configuration
     email: {
         smtp: {
-            host: process.env.SMTP_HOST || "smtp.gmail.com",
-            port: parseInt(process.env.SMTP_PORT) || 587,
-            user: process.env.SMTP_USER || "",
-            pass: process.env.SMTP_PASS || ""
+            host: "${SMTP_HOST}" || "smtp.gmail.com",
+            port: "${SMTP_PORT}" || 587,
+            user: "${SMTP_USER}" || "",
+            pass: "${SMTP_PASS}" || ""
         }
     },
 
     // Analytics Configuration
     analytics: {
-        googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || "G-B7E74QLH1Z"
+        googleAnalyticsId: "${GOOGLE_ANALYTICS_ID}" || "G-B7E74QLH1Z"
     },
 
     // API Configuration
     api: {
-        rateLimit: parseInt(process.env.API_RATE_LIMIT) || 100,
-        rateWindow: parseInt(process.env.API_RATE_WINDOW) || 15
+        rateLimit: "${API_RATE_LIMIT}" || 100,
+        rateWindow: "${API_RATE_WINDOW}" || 15
     },
 
     // Logging Configuration
     logging: {
-        level: process.env.LOG_LEVEL || "info",
-        file: process.env.LOG_FILE || "logs/app.log"
+        level: "${LOG_LEVEL}" || "info",
+        file: "${LOG_FILE}" || "logs/app.log"
     },
 
     // CORS Configuration
     cors: {
-        origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
+        origin: "${CORS_ORIGIN}" ? "${CORS_ORIGIN}".split(',') : [
             "http://localhost:3000",
             "http://localhost:8080",
             "http://127.0.0.1:5500"
